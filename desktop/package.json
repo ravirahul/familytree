@@ -1,0 +1,29 @@
+{
+  "name": "familytree-desktop",
+  "productName": "FamilyTree",
+  "version": "8.0.0",
+  "description": "FamilyTree on your own computer: the web app with PHP and SQLite bundled.",
+  "main": "main.js",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "fetch-php": "node scripts/fetch-php.mjs",
+    "start": "electron .",
+    "dist": "npm run fetch-php && electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "in.bliink.familytree",
+    "files": ["main.js"],
+    "extraResources": [
+      { "from": "../public_html", "to": "app-src", "filter": ["**/*", "!.env", "!storage/**", "!admin/uploads/**"] },
+      { "from": "../tools/router.php", "to": "tools/router.php" },
+      { "from": "php", "to": "php" }
+    ],
+    "win": { "target": "nsis" },
+    "mac": { "target": "dmg" },
+    "linux": { "target": "AppImage" }
+  }
+}

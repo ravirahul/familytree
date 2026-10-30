@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      # the installer writes .env; these only pre-fill the database step
+      FT_DB_HOST: db
+      FT_DB_NAME: familytree
+      FT_DB_USER: familytree
+      FT_DB_PASS: familytree
+    volumes:
+      - uploads:/var/www/html/admin/uploads
+      - storage:/var/www/html/storage
+      - env:/var/www/html/env
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: familytree
+      MARIADB_USER: familytree
+      MARIADB_PASSWORD: familytree
+      MARIADB_ROOT_PASSWORD: change-me-root
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  db:
+  uploads:
+  storage:
+  env:

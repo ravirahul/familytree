@@ -1,0 +1,57 @@
+/* assets/brand.css - FamilyTree's own look, shared by every page that isn't a family's tree.
+   Forest & Brass: deep green, warm ivory, brass only for small accents. The homepage (home.css),
+   log in / sign up (auth.css) and the admin panel (admin.css) use the same values.
+   Fonts: Fraunces for headings, Plus Jakarta Sans for text (load both from Google Fonts on the page).
+   Logo markup comes from includes/brand.php (ft_logo / ft_brand). */
+:root {
+  --ft-paper: #F7F4EC; --ft-surface: #FFFFFF; --ft-sunk: #EFEBE1; --ft-line: #DDD8CB; --ft-edge: #B9B3A4;
+  --ft-ink: #1C1B18; --ft-ink2: #55524A; --ft-muted: #77736A;
+  --ft-green: #1F4D3A; --ft-green-ink: #173B2C; --ft-green-soft: #E3ECE6;
+  --ft-band: #0E241B; --ft-band-sub: #DCE8E1; --ft-band-edge: #3B5E4F;
+  --ft-brass: #B8924F; --ft-brass-ink: #6E5222; --ft-brass-soft: #F1E9D8;
+  --ft-ivory: #F7F4EC; --ft-focus: #8A6A2E;
+  --ft-danger: #B3261E; --ft-danger-soft: #FBEAE8; --ft-ok: #2E7D4F; --ft-ok-soft: #E3F1E8;
+  --ft-shadow: 0 14px 34px rgba(28,27,24,.10);
+  --ft-serif: 'Fraunces', Georgia, serif; --ft-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --ft-sk: #E9E4D8; --ft-sk-hi: #F4F0E6;
+}
+html[data-theme="dark"] {
+  --ft-paper: #121512; --ft-surface: #1A1F1B; --ft-sunk: #232A25; --ft-line: #2D3630; --ft-edge: #4A564E;
+  --ft-ink: #ECE8DF; --ft-ink2: #B4B0A5; --ft-muted: #8E8A80;
+  --ft-green: #2F7A5A; --ft-green-ink: #8FD1B0; --ft-green-soft: #1E3329;
+  --ft-band: #0A1A13; --ft-band-sub: #C9D9D0; --ft-band-edge: #2C4A3D;
+  --ft-brass: #C9A35E; --ft-brass-ink: #D9BC85; --ft-brass-soft: #2B2820;
+  --ft-focus: #D9BC85; --ft-danger: #F2938C; --ft-danger-soft: #3A1E1C; --ft-ok: #6CC795; --ft-ok-soft: #1B3326;
+  --ft-shadow: 0 14px 34px rgba(0,0,0,.4);
+  --ft-sk: #232A25; --ft-sk-hi: #2D3630;
+}
+
+/* the logo: a brass mark and the name in Fraunces (markup from ft_brand() in includes/brand.php) */
+.ft-brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: inherit; text-decoration: none; font: 600 20px/1 var(--ft-serif); letter-spacing: -.01em; }
+.ft-brand .ft-mark { flex: none; color: var(--ft-brass); }
+.ft-brand small { display: block; margin-top: 3px; font: 600 11px/1 var(--ft-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ft-muted); }
+
+/* buttons */
+.ft-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font: 600 15px/1 var(--ft-sans); text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s, transform .1s; }
+.ft-btn:active { transform: scale(.98); }
+.ft-btn-primary { background: var(--ft-green); color: #fff; }
+.ft-btn-primary:hover { background: var(--ft-green-ink); color: #fff; }
+html[data-theme="dark"] .ft-btn-primary:hover { background: #3A8E6B; }
+.ft-btn-line { background: var(--ft-surface); border-color: var(--ft-edge); color: var(--ft-ink); }
+.ft-btn-line:hover { background: var(--ft-sunk); }
+.ft-btn-ivory { background: var(--ft-ivory); color: var(--ft-band); }
+.ft-btn-ivory:hover { background: #fff; }
+
+/* skeleton loaders: put class="sk" on a placeholder block (sk-line, sk-circle, sk-card for shapes).
+   The shimmer stops under reduced motion. Give the container aria-busy="true" while loading. */
+.sk { display: block; position: relative; overflow: hidden; background: var(--ft-sk, #E9E4D8); border-radius: 8px; }
+.sk::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, var(--ft-sk-hi, #F4F0E6), transparent); animation: ft-sk 1.4s ease-in-out infinite; }
+.sk-line { height: 12px; margin: 8px 0; }
+.sk-line.w40 { width: 40%; } .sk-line.w60 { width: 60%; } .sk-line.w80 { width: 80%; }
+.sk-title { height: 22px; width: 50%; margin: 6px 0 14px; }
+.sk-circle { border-radius: 50%; }
+.sk-card { height: 120px; border-radius: 14px; }
+@keyframes ft-sk { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .sk::after { animation: none; display: none; } }
+
+:where(.ft-page) :focus-visible { outline: 3px solid var(--ft-focus); outline-offset: 2px; border-radius: 4px; }

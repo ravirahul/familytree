@@ -1,0 +1,65 @@
+# ── public_html/.htaccess ──────────────────────────────────────────────────
+# Hostinger Apache rules for the Family Tree root
+
+# Deny direct access to config and env files
+<FilesMatch "^(\.env|config\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Disable directory listing across the whole site
+Options -Indexes
+
+# storage/ holds data files, caches and the encryption key: never served
+RewriteEngine On
+RewriteRule ^storage(/|$) - [F,L]
+RewriteRule ^tools(/|$) - [F,L]
+
+# ── Security headers ───────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set X-Content-Type-Options "nosniff"
+    # framing: PHP pages decide (config.php lets /embed/ through); static pages are never framed
+    <FilesMatch "\.html$">
+        Header always set X-Frame-Options "SAMEORIGIN"
+    </FilesMatch>
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    # Versioned assets (?v=) can be cached hard; HTML and PHP stay fresh
+    <FilesMatch "\.(js|css|png|ico|svg|woff2?|ttf)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+    <FilesMatch "\.(html|php)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# ── URL Rewrites ───────────────────────────────────────────────────────────
+RewriteEngine On
+
+# Force HTTPS (Hostinger provides SSL; uncomment after confirming SSL is active)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Retired viewer routes → home (the canonical viewer is /tree/{slug})
+RewriteRule ^(d3|balkan|v1)(/.*)?$ / [R=301,L]
+RewriteRule ^custom/?$ / [R=301,L]
+
+# Sitemap is generated from the tenants table
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+RewriteRule ^guide/?$ guide.php [L]
+RewriteRule ^guide/([a-z0-9-]{1,60})/?$ guide.php?p=$1 [L]
+RewriteRule ^mcp/?$ mcp.php [L,QSA]
+RewriteRule ^embed/([a-zA-Z0-9_-]{1,80})/?$ tree.php?slug=$1&embed=1 [L,QSA]
+RewriteRule ^embed/([a-zA-Z0-9_-]{1,80})/(events|map|memories|relation)/?$ tree.php?slug=$1&view=$2&embed=1 [L,QSA]
+
+# Phase 4: /tree/{slug}  →  tree.php?slug={slug}
+# Matches any slug containing letters, numbers, hyphens, underscores (1-80 chars)
+# Does NOT rewrite if tree.php itself is being requested directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^tree/([a-zA-Z0-9_-]{1,80})/?$ tree.php?slug=$1 [L,QSA]
+# /tree/{slug}/events|map|memories  →  tree.php?slug={slug}&view=...
+RewriteRule ^tree/([a-zA-Z0-9_-]{1,80})/(events|map|memories|relation)/?$ tree.php?slug=$1&view=$2 [L,QSA]
+# /tree/{slug}/poster|book  ->  print.php (printable poster PDF / family book)
+RewriteRule ^tree/([a-zA-Z0-9_-]{1,80})/(poster|book)/?$ print.php?slug=$1&kind=$2 [L,QSA]

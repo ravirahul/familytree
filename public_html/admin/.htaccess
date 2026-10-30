@@ -1,0 +1,17 @@
+# ── public_html/admin/.htaccess ────────────────────────────────────────────
+# Protects the admin directory
+
+# Deny direct browser access to config and any .env files
+<FilesMatch "^(config\.php|\.env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Disable directory listing
+Options -Indexes
+
+# Prevent direct execution of .log files
+<FilesMatch "\.log$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

@@ -1,0 +1,20 @@
+# secrets and private data, never committed
+public_html/.env
+*.env
+!.env.example
+u221115127_*.sql
+*.zip
+public_html/admin/uploads/*
+!public_html/admin/uploads/.gitkeep
+public_html/storage/cache/*
+public_html/storage/*.sqlite
+storage/
+node_modules/
+desktop/dist/
+desktop/php/
+.DS_Store
+Thumbs.db
+demo/.cache/
+demo/images/
+tools/__pycache__/
+ss/
